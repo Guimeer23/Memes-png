@@ -621,3 +621,11 @@ nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34
 .customTabHeader strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #customTabFrame{border:0;width:100%;height:100%;flex:1;background:var(--bg)}
 @media(max-width:520px){.customTabOverlay{padding:0}.customTabWindow{width:100%;height:calc(100dvh - env(safe-area-inset-top,0px));max-height:100dvh;border-radius:16px 16px 0 0}.customTabHeader{min-height:54px}}
+
+/* v1.30.23 — botões dimensionados e posicionados dentro do círculo */
+.radialMenu{overflow:hidden}
+.radialItem{width:var(--radial-item-size,64px);height:var(--radial-item-size,64px);right:0;bottom:0;box-sizing:border-box;transform:translate(0,0) scale(.5);animation:radialItemIn .28s .04s ease-out forwards}
+.radialItem span{font-size:clamp(1rem,calc(var(--radial-item-size,64px)*.34),1.55rem)}
+.radialItem small{font-size:clamp(.55rem,calc(var(--radial-item-size,64px)*.105),.68rem);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes radialItemIn{to{opacity:1;transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(1)}}
+@media(max-width:420px){.radialMenu{width:240px;height:240px}.radialMenu::before{width:236px;height:236px}.radialItem{right:0;bottom:0}}
