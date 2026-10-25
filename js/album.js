@@ -2,7 +2,7 @@
 (async function loadReleaseInfo(){
   const fallback={version:"v1.30.22",date:"25/10/2026",channel:"Desenvolvimento",project:"Álbum de Figurinhas"};
   try{
-    const response=await fetch("version.json? t="+Date.now());
+    const response=await fetch("version.json?t="+Date.now());
     if(!response.ok)throw new Error("Não foi possível carregar version.json");
     const info=await response.json();
     const data={...fallback,...info};
