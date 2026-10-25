@@ -612,3 +612,12 @@ nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34
  .radialItem{right:8px;bottom:8px}
  @keyframes radialItemIn{to{opacity:1;transform:translate(-132px,-130px) scale(1)}}
 }
+
+/* v1.30.21 — contêiner independente para abas em jogo/abas/<nome>/index.html */
+.customTabOverlay{position:fixed;inset:0;z-index:120;background:rgba(22,20,30,.58);display:flex;align-items:center;justify-content:center;padding:12px}
+.customTabOverlay[hidden]{display:none}
+.customTabWindow{width:min(100%,900px);height:min(88dvh,900px);background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 70px #0003}
+.customTabHeader{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--line);gap:10px}
+.customTabHeader strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#customTabFrame{border:0;width:100%;height:100%;flex:1;background:var(--bg)}
+@media(max-width:520px){.customTabOverlay{padding:0}.customTabWindow{width:100%;height:calc(100dvh - env(safe-area-inset-top,0px));max-height:100dvh;border-radius:16px 16px 0 0}.customTabHeader{min-height:54px}}
