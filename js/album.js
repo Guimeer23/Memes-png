@@ -363,11 +363,22 @@ function page(n){
 }
 $("navAlbum").onclick=()=>page("Album");$("navShop").onclick=()=>page("Shop");$("navTrade").onclick=()=>page("Trade");
 $("navRank").onclick=()=>page("Rank");
-const radialTabs=[{id:"Friends",label:"Amigos",icon:"👥"}];
+const radialTabs=[{id:"Friends",label:"Amigos",icon:"👥",kind:"page"}];
+const ABAS_REPO="Guimeer23/Memes-png";
+const ABAS_REF="refactor/v1.30.15";
+function labelAba(s){return s.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase())}
+function iconAba(s){const k=s.toLowerCase();if(k.includes("chat")||k.includes("mensag"))return "💬";if(k.includes("notific")||k.includes("aviso"))return "🔔";if(k.includes("conquist"))return "🏆";if(k.includes("perfil"))return "👤";if(k.includes("evento"))return "🎉";return "📂"}
 function toggleRadialMenu(force){const menu=$("radialMenu"),btn=$("navMore");if(!menu||!btn)return;const open=typeof force==="boolean"?force:menu.hidden;menu.hidden=!open;btn.classList.toggle("on",open);btn.setAttribute("aria-expanded",String(open));}
+function drawRadialTabs(){const menu=$("radialMenu");menu.innerHTML=radialTabs.map((t,i)=>{const angle=(-135+(i*(105/Math.max(1,radialTabs.length-1))))*Math.PI/180;const x=Math.round(Math.cos(angle)*0);return `<button class="radialItem" data-tab-kind="${t.kind}" data-tab-id="${t.id}" title="${t.label}"><span>${t.icon}</span><small>${t.label}</small></button>`}).join("");}
+async function loadRadialTabs(){try{const u=`https://api.github.com/repos/${ABAS_REPO}/contents/jogo/abas?ref=${encodeURIComponent(ABAS_REF)}`;const res=await fetch(u,{headers:{Accept:"application/vnd.github+json"}});if(!res.ok)throw Error("GitHub API "+res.status);const dirs=await res.json();for(const d of dirs){if(d.type!=="dir"||! /^[a-z0-9_-]+$/i.test(d.name)||radialTabs.some(t=>t.id===d.name))continue;const check=await fetch(`https://api.github.com/repos/${ABAS_REPO}/contents/jogo/abas/${encodeURIComponent(d.name)}/index.html?ref=${encodeURIComponent(ABAS_REF)}`,{headers:{Accept:"application/vnd.github+json"}});if(!check.ok)continue;radialTabs.push({id:d.name,label:labelAba(d.name),icon:iconAba(d.name),kind:"folder",path:`jogo/abas/${d.name}/index.html`})}drawRadialTabs()}catch(e){console.warn("Não foi possível carregar abas de jogo/abas:",e);drawRadialTabs()}}
+function openCustomTab(t){const ov=$("customTabOverlay"),frame=$("customTabFrame");$("customTabTitle").textContent=t.label;frame.src=t.path;ov.hidden=false;document.body.style.overflow="hidden"}
+function closeCustomTab(){const ov=$("customTabOverlay");ov.hidden=true;$("customTabFrame").src="about:blank";document.body.style.overflow=""}
 $("navMore").onclick=()=>toggleRadialMenu();
-$("radialMenu").innerHTML=radialTabs.map(t=>`<button class="radialItem" data-open-page="${t.id}"><span>${t.icon}</span><small>${t.label}</small></button>`).join("");
-$("radialMenu").addEventListener("click",e=>{const b=e.target.closest("[data-open-page]");if(!b)return;toggleRadialMenu(false);page(b.dataset.openPage)});
+drawRadialTabs();loadRadialTabs();
+$("radialMenu").addEventListener("click",e=>{const b=e.target.closest("[data-tab-id]");if(!b)return;const t=radialTabs.find(x=>x.id===b.dataset.tabId);toggleRadialMenu(false);if(!t)return;if(t.kind==="page")page(t.id);else openCustomTab(t)});
+$("customTabClose").onclick=closeCustomTab;
+$("customTabOverlay").addEventListener("click",e=>{if(e.target===$("customTabOverlay"))closeCustomTab()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){toggleRadialMenu(false);if(!$("customTabOverlay").hidden)closeCustomTab()}});
 document.addEventListener("click",e=>{if(!e.target.closest("#radialMenu")&&!e.target.closest("#navMore"))toggleRadialMenu(false)});
 $("bonus").onclick=()=>claimBonus();
 function ensureOpen(){const b=$("book");if(b.classList.contains("open"))return Promise.resolve();b.classList.add("open");return new Promise(r=>setTimeout(r,1000))}
