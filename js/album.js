@@ -1730,14 +1730,86 @@ function rankPos(r){
 }
 
 /* ---- amigos ---- */
-function toggleFriend(u){
-  if(!fbUser||!ME)return toast("Entre com Google para adicionar amigos");
-  if(u===ME)return toast("Esse é você 😄");
-  const f=FR(),i=f.indexOf(u);
-  if(i>=0){f.splice(i,1);toast("Amigo removido")}
-  else{if(f.length>=100)return toast("Limite de 100 amigos");f.push(u);toast("👥 Amigo adicionado!")}
-  save();renderRanking();renderPlayer();
+/* Solicitações de amizade no Firestore; não adiciona ninguém sem aceite. */
+let socialRequests=[],socialUnsubs=[],socialTab="friends",socialBusy=false;
+const socialRef=()=>fbDb.collection("friendRequests");
+const socialDocId=(from,to)=>String(from)+"__"+String(to);
+function socialUser(uid){return rkRows.find(r=>r.uid===uid)||{uid,name:"Jogador",photo:"",score:0,pastedCount:0};}
+function socialEscBtn(uid,label,attr,extra=""){return `<button class="ghost" ${attr}="${esc(uid)}" ${extra}>${label}</button>`;}
+function socialRender(){
+ const list=$("socialList"),status=$("socialStatus"),count=$("socialReceivedN");
+ if(!list||!status)return;
+ const incoming=socialRequests.filter(x=>x.to===ME&&x.status==="pending");
+ if(count)count.textContent=String(incoming.length);
+ if(!fbUser||!ME){status.textContent="Entre com Google para gerenciar amizades.";list.innerHTML="";return;}
+ status.textContent=socialTab==="friends"?"Amigos aceitos":socialTab==="received"?"Solicitações que aguardam sua resposta":"Solicitações enviadas";
+ if(socialTab==="friends"){
+   const ids=FR();
+   const rows=ids.map(uid=>socialUser(uid));
+   list.innerHTML=rows.length?rows.map(r=>`<div class="socialRow">${avImg(r.photo,"av")}<div class="socialWho"><b>${esc(r.name||"Jogador")}</b><small>ID ${pidOf(r.uid)}</small></div>${socialEscBtn(r.uid,"Ver perfil","data-social-profile")}${socialEscBtn(r.uid,"Remover","data-social-remove")}</div>`).join(""):'<p class="rkEmpty">Você ainda não tem amigos. Busque um jogador no ranking e envie uma solicitação.</p>';
+ }else{
+   const rows=socialRequests.filter(x=>socialTab==="received"?x.to===ME&&x.status==="pending":x.from===ME&&x.status==="pending");
+   list.innerHTML=rows.length?rows.map(x=>{const uid=socialTab==="received"?x.from:x.to,r=socialUser(uid);return `<div class="socialRow">${avImg(r.photo,"av")}<div class="socialWho"><b>${esc(r.name||x.fromName||"Jogador")}</b><small>ID ${pidOf(uid)} · aguardando resposta</small></div>${socialEscBtn(uid,"Ver perfil","data-social-profile")}${socialTab==="received"?socialEscBtn(x.id,"Aceitar","data-social-accept"):""}${socialEscBtn(x.id,"Recusar / cancelar","data-social-decline")}</div>`}).join(""):'<p class="rkEmpty">Nenhuma solicitação pendente.</p>';
+ }
 }
+function socialWatch(){
+ socialUnsubs.forEach(fn=>{try{fn()}catch(e){}});socialUnsubs=[];
+ if(!fbDb||!fbUser||!ME)return;
+ const mergeSnap=sn=>{const map=new Map(socialRequests.map(x=>[x.id,x]));sn.docs.forEach(d=>map.set(d.id,{id:d.id,...d.data()}));socialRequests=[...map.values()].filter(x=>x.from===ME||x.to===ME);socialRender();renderSearch();renderPlayer();};
+ try{
+  socialUnsubs.push(socialRef().where("from","==",ME).onSnapshot(mergeSnap,e=>{console.warn("Solicitações enviadas:",e);$("socialStatus").textContent="Não foi possível ler solicitações. Verifique as regras do Firestore.";}));
+  socialUnsubs.push(socialRef().where("to","==",ME).onSnapshot(mergeSnap,e=>{console.warn("Solicitações recebidas:",e);$("socialStatus").textContent="Não foi possível ler solicitações. Verifique as regras do Firestore.";}));
+ }catch(e){console.warn(e);$("socialStatus").textContent="Firebase não permite acessar as solicitações. Configure as regras da coleção friendRequests.";}
+}
+async function toggleFriend(u){
+ if(!fbUser||!ME)return toast("Entre com Google para adicionar amigos");
+ if(u===ME)return toast("Esse é você 😄");
+ if(isFr(u)){
+   if(!confirm("Remover este jogador dos seus amigos?"))return;
+   const f=FR(),i=f.indexOf(u);if(i>=0)f.splice(i,1);
+   save();socialRender();renderRanking();renderPlayer();return toast("Amigo removido");
+ }
+ if(socialRequests.some(x=>x.from===ME&&x.to===u&&x.status==="pending"))return toast("Solicitação já enviada");
+ if(socialRequests.some(x=>x.from===u&&x.to===ME&&x.status==="pending")){socialTab="received";socialRender();return toast("Esse jogador já enviou uma solicitação para você");}
+ try{
+  const id=socialDocId(ME,u),ref=socialRef().doc(id),sn=await ref.get();
+  if(sn.exists&&sn.data().status==="pending")return toast("Solicitação já enviada");
+  await ref.set({from:ME,to:u,fromName:fbUser.displayName||"Jogador",fromPhoto:fbUser.photoURL||"",status:"pending",createdAt:Date.now(),updatedAt:Date.now()});
+  toast("Solicitação de amizade enviada");socialTab="sent";socialRender();
+ }catch(e){console.warn("Enviar solicitação:",e);toast("Não foi possível enviar. Verifique as permissões do Firebase.");}
+}
+async function socialAccept(id){
+ const req=socialRequests.find(x=>x.id===id);if(!req||req.to!==ME||req.status!=="pending")return;
+ if(FR().length>=100)return toast("Limite de 100 amigos");
+ try{
+  const ref=socialRef().doc(id);
+  await fbDb.runTransaction(async tx=>{const sn=await tx.get(ref);if(!sn.exists||sn.data().status!=="pending"||sn.data().to!==ME)throw new Error("Solicitação não está mais pendente");tx.update(ref,{status:"accepted",acceptedAt:Date.now(),updatedAt:Date.now()});});
+  if(!FR().includes(req.from))FR().push(req.from);
+  save();
+  /* O remetente receberá a atualização pelo listener e sincronizará sua própria lista. */
+  toast("Amizade aceita!");socialTab="friends";socialRender();renderRanking();renderPlayer();
+ }catch(e){console.warn("Aceitar solicitação:",e);toast("Não foi possível aceitar. Tente novamente.");}
+}
+async function socialDecline(id){
+ const req=socialRequests.find(x=>x.id===id);if(!req)return;
+ if(req.from!==ME&&req.to!==ME)return;
+ try{await socialRef().doc(id).update({status:req.to===ME?"declined":"cancelled",updatedAt:Date.now()});toast(req.to===ME?"Solicitação recusada":"Solicitação cancelada");socialRender();}
+ catch(e){console.warn(e);toast("Não foi possível atualizar a solicitação.");}
+}
+function socialSyncAccepted(){
+ socialRequests.filter(x=>x.status==="accepted"&&(x.from===ME||x.to===ME)).forEach(x=>{
+  const other=x.from===ME?x.to:x.from;
+  if(!FR().includes(other)&&FR().length<100){FR().push(other);save();}
+ });
+}
+$("socialTabs")?.addEventListener("click",e=>{const b=e.target.closest("[data-social-tab]");if(!b)return;socialTab=b.dataset.socialTab;$("socialTabs").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));socialRender();});
+$("socialList")?.addEventListener("click",e=>{
+ const p=e.target.closest("[data-social-profile]"),a=e.target.closest("[data-social-accept]"),d=e.target.closest("[data-social-decline]"),rm=e.target.closest("[data-social-remove]");
+ if(p)return openPlayer(p.dataset.socialProfile);
+ if(a)return socialAccept(a.dataset.socialAccept);
+ if(d)return socialDecline(d.dataset.socialDecline);
+ if(rm){const f=FR(),i=f.indexOf(rm.dataset.socialRemove);if(i>=0)f.splice(i,1);save();socialRender();renderRanking();renderPlayer();toast("Amigo removido");}
+});
 
 /* ---- busca por nome ou ID ---- */
 function rkFind(q){
@@ -1848,6 +1920,7 @@ function openRanking(){
   renderRanking();
   if(rkUnsub)return;
   try{
+    socialWatch();
     rkUnsub=fbDb.collection("saves").onSnapshot(sn=>{
       rkRows=sn.docs.map(d=>{
         const data=d.data();
@@ -1867,7 +1940,7 @@ function openRanking(){
           score,pastedCount,pasted,conq,packs,trades
         };
       }).sort((a,b)=>b.score-a.score);
-      renderRanking();renderSearch();renderPlayer();
+      socialSyncAccepted();renderRanking();renderSearch();renderPlayer();socialRender();
     },e=>{
       console.warn("Ranking erro:",e);
       $("rkList").innerHTML=`<p class="rkEmpty">Erro ao carregar ranking.</p>`;
@@ -1875,6 +1948,7 @@ function openRanking(){
   }catch(e){console.warn(e)}
 }
 function closeRanking(){
+  socialUnsubs.forEach(fn=>{try{fn()}catch(e){}});socialUnsubs=[];
   if(rkUnsub){try{rkUnsub()}catch(e){}rkUnsub=null}
   closePlayer();
 }
