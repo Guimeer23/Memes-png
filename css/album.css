@@ -577,3 +577,12 @@ html.fx-noshine .slot.fx,html.fx-noshine .slot.fx .st::before,html.fx-noshine .s
 .socialWho small{color:var(--mut);font-size:.75rem}
 .socialRow button{font-size:.78rem;padding:7px 9px;white-space:nowrap}
 @media(max-width:430px){.socialRow{flex-wrap:wrap}.socialWho{min-width:calc(100% - 60px)}.socialRow button{flex:1}}
+
+/* v1.30.18 — área de amigos na navegação inferior */
+nav button#navFriends{color:#16864a}
+nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));box-shadow:inset 0 3px 0 #22c55e}
+#pgFriends .socialPanel{margin-top:10px}
+#pgFriends .socialPanel>h3{margin-bottom:14px}
+#pgFriends .socialTabs{display:flex;gap:8px;flex-wrap:wrap}
+#pgFriends .socialTabs button.on{background:#15803d;color:white;border-color:#15803d}
+@media(max-width:420px){nav button{padding:10px 1px;font-size:.68rem}nav button em{display:block;font-style:normal;font-size:1.2rem;margin-bottom:2px}}
