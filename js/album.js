@@ -1755,7 +1755,7 @@ function socialRender(){
 function socialWatch(){
  socialUnsubs.forEach(fn=>{try{fn()}catch(e){}});socialUnsubs=[];
  if(!fbDb||!fbUser||!ME)return;
- const mergeSnap=sn=>{const map=new Map(socialRequests.map(x=>[x.id,x]));sn.docs.forEach(d=>map.set(d.id,{id:d.id,...d.data()}));socialRequests=[...map.values()].filter(x=>x.from===ME||x.to===ME);socialRender();renderSearch();renderPlayer();};
+ const mergeSnap=sn=>{const map=new Map(socialRequests.map(x=>[x.id,x]));sn.docs.forEach(d=>map.set(d.id,{id:d.id,...d.data()}));socialRequests=[...map.values()].filter(x=>x.from===ME||x.to===ME);socialSyncAccepted();socialRender();renderSearch();renderPlayer();};
  try{
   socialUnsubs.push(socialRef().where("from","==",ME).onSnapshot(mergeSnap,e=>{console.warn("Solicitações enviadas:",e);$("socialStatus").textContent="Não foi possível ler solicitações. Verifique as regras do Firestore.";}));
   socialUnsubs.push(socialRef().where("to","==",ME).onSnapshot(mergeSnap,e=>{console.warn("Solicitações recebidas:",e);$("socialStatus").textContent="Não foi possível ler solicitações. Verifique as regras do Firestore.";}));
