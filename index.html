@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Álbum de Figurinhas v1.30.17</title>
+<title>Álbum de Figurinhas v1.30.18</title>
 <link rel="stylesheet" href="css/album.css">
 </head>
 <body>
@@ -88,6 +88,18 @@
     <h4 style="margin:10px 0 2px;font-size:.85rem">🎉 Eventos</h4><div class="seloGrid" id="pfConqEv"></div>
   </div>
  </section>
+ <section id="pgFriends" hidden>
+  <div class="box"><h3>👥 Amigos</h3><p class="mut">Gerencie seus amigos e solicitações.</p><div class="socialPanel" id="socialPanel">
+      <h3>👥 Central de amizades</h3>
+      <div class="socialTabs" id="socialTabs">
+        <button class="ghost on" data-social-tab="friends">Meus amigos</button>
+        <button class="ghost" data-social-tab="received">Recebidas <b id="socialReceivedN">0</b></button>
+        <button class="ghost" data-social-tab="sent">Enviadas</button>
+      </div>
+      <div id="socialStatus" class="socialStatus">Entre com Google para gerenciar amizades.</div>
+      <div id="socialList"></div>
+    </div></div>
+ </section>
  <section id="pgRank" hidden>
   <div class="box">
     <h3>🏆 Ranking <small id="rkInfo"></small></h3>
@@ -97,16 +109,7 @@
       <button class="main" id="rkQgo">Buscar</button>
     </div>
     <div id="rkRes"></div>
-    <div class="socialPanel" id="socialPanel">
-      <h3>👥 Central de amizades</h3>
-      <div class="socialTabs" id="socialTabs">
-        <button class="ghost on" data-social-tab="friends">Meus amigos</button>
-        <button class="ghost" data-social-tab="received">Recebidas <b id="socialReceivedN">0</b></button>
-        <button class="ghost" data-social-tab="sent">Enviadas</button>
-      </div>
-      <div id="socialStatus" class="socialStatus">Entre com Google para gerenciar amizades.</div>
-      <div id="socialList"></div>
-    </div>
+
     <div class="rkFilters" id="rkFilters">
       <button class="ghost on" data-f="global">🌎 Global</button>
       <button class="ghost" data-f="regional" id="rkRegBtn">🇧🇷 Regional</button>
@@ -128,6 +131,7 @@
   <button id="navShop"><em>🛒</em><span>Loja</span></button>
   <button id="navTrade"><em>🔁</em><span>Troca</span></button>
   <button id="navRank"><em>🏆</em><span>Ranking</span></button>
+  <button id="navFriends"><em>👥</em><span>Amigos</span></button>
 </nav>
 <div id="pvOv"><div id="pvBox"></div></div>
 <div id="buyOv"><div id="buyBox"></div></div>
@@ -137,7 +141,7 @@
   <button data-sub="settings"><span>⚙️</span>Configurações</button>
   <button data-sub="terms"><span>📜</span>Termos de uso</button>
   <button data-sub="credits"><span>🏅</span>Créditos</button>
-  <div class="ver">Álbum de Figurinhas · v1.30.17</div>
+  <div class="ver">Álbum de Figurinhas · v1.30.18</div>
 </div></div>
 <div id="subOv"><div>
   <div class="subh"><button class="rbtn" id="subBack" aria-label="Voltar">◀</button><h2 id="subTitle"></h2></div>
@@ -155,7 +159,7 @@
     <div class="box"><h3>👤 Conta</h3><p class="mut" id="setAcc"></p></div>
     <div class="box" id="versionInfo">
       <h3>ℹ️ Sobre esta versão</h3>
-      <p style="margin:6px 0"><b>Versão:</b> v1.30.17</p>
+      <p style="margin:6px 0"><b>Versão:</b> v1.30.18</p>
       <p style="margin:6px 0"><b>Data desta versão:</b> 22/10/2026</p>
       <p style="margin:6px 0"><b>Canal:</b> Desenvolvimento</p>
       <p style="margin:6px 0"><b>Projeto:</b> Álbum de Figurinhas</p>
