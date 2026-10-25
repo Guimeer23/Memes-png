@@ -1,3 +1,25 @@
+/* Informações centralizadas do lançamento: atualize version.json a cada versão. */
+(async function loadReleaseInfo(){
+  const fallback={version:"v1.30.22",date:"25/10/2026",channel:"Desenvolvimento",project:"Álbum de Figurinhas"};
+  try{
+    const response=await fetch("version.json? t="+Date.now());
+    if(!response.ok)throw new Error("Não foi possível carregar version.json");
+    const info=await response.json();
+    const data={...fallback,...info};
+    document.querySelectorAll("[data-version]").forEach(el=>el.textContent=data.version);
+    document.querySelectorAll("[data-release-date]").forEach(el=>el.textContent=data.date);
+    document.querySelectorAll("[data-channel]").forEach(el=>el.textContent=data.channel);
+    document.querySelectorAll("title").forEach(el=>el.textContent=data.project+" "+data.version);
+    const project=document.querySelector("#versionInfo");
+    const projectRow=project&&Array.from(project.querySelectorAll("p")).find(p=>p.textContent.includes("Projeto:"));
+    if(projectRow)projectRow.innerHTML="<b>Projeto:</b> "+data.project;
+  }catch(error){
+    document.querySelectorAll("[data-version]").forEach(el=>el.textContent=fallback.version);
+    document.querySelectorAll("[data-release-date]").forEach(el=>el.textContent=fallback.date);
+    console.warn("Informações da versão:",error);
+  }
+})();
+
 const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
 const FXD={tabs:1,page3d:1,leafHQ:1,particles:1,shine:1,shake:1,vibe:1};
 const FX=Object.assign({},FXD);
