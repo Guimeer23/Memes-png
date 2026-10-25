@@ -355,14 +355,14 @@ document.addEventListener("keydown",e=>{
  else if(e.key==="ArrowLeft")goLeaf(lastTarget()-1);
 });
 function page(n){
-  ["Album","Shop","Trade","Rank","Profile"].forEach(k=>{$("pg"+k).hidden=k!=n;{const nb=$("nav"+k);if(nb)nb.classList.toggle("on",k==n)}});
+  ["Album","Shop","Trade","Rank","Friends","Profile"].forEach(k=>{$("pg"+k).hidden=k!=n;{const nb=$("nav"+k);if(nb)nb.classList.toggle("on",k==n)}});
   scrollTo(0,0);
   try{ if(n=="Trade"){renderMarket();loadStats().then(r=>{if(r){tradeUI();renderMarket()}}).catch(()=>{})} }catch(e){console.warn(e)}
   try{ if(n=="Profile")renderProfile(); }catch(e){console.warn(e)}
   try{ if(n=="Rank")openRanking(); else closeRanking(); }catch(e){console.warn(e)}
 }
 $("navAlbum").onclick=()=>page("Album");$("navShop").onclick=()=>page("Shop");$("navTrade").onclick=()=>page("Trade");
-$("navRank").onclick=()=>page("Rank");
+$("navRank").onclick=()=>page("Rank");$("navFriends").onclick=()=>page("Friends");
 $("bonus").onclick=()=>claimBonus();
 function ensureOpen(){const b=$("book");if(b.classList.contains("open"))return Promise.resolve();b.classList.add("open");return new Promise(r=>setTimeout(r,1000))}
 async function goToCard(id){
@@ -2022,6 +2022,7 @@ $("pgRank").addEventListener("click",e=>{
   const row=e.target.closest("[data-uid]");
   if(row)openPlayer(row.dataset.uid);
 });
+$("pgFriends").addEventListener("click",e=>{const fb=e.target.closest("[data-fr]");if(fb){e.stopPropagation();toggleFriend(fb.dataset.fr);return}const row=e.target.closest("[data-uid]");if(row)openPlayer(row.dataset.uid)});
 $("rkQ").addEventListener("input",renderSearch);
 $("rkQ").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("rkQgo").click()}});
 $("rkQgo").onclick=()=>{
