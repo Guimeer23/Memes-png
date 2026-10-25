@@ -586,3 +586,14 @@ nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34
 #pgFriends .socialTabs{display:flex;gap:8px;flex-wrap:wrap}
 #pgFriends .socialTabs button.on{background:#15803d;color:white;border-color:#15803d}
 @media(max-width:420px){nav button{padding:10px 1px;font-size:.68rem}nav button em{display:block;font-style:normal;font-size:1.2rem;margin-bottom:2px}}
+
+/* v1.30.19 — menu radial de novas abas */
+.radialMenu{position:fixed;right:8px;bottom:calc(82px + env(safe-area-inset-bottom,0px));width:290px;height:290px;z-index:49;pointer-events:none}
+.radialMenu:not([hidden]){display:block}
+.radialMenu::before{content:"";position:absolute;right:-22px;bottom:-25px;width:310px;height:310px;border-radius:50%;background:rgba(34,197,94,.13);border:2px solid rgba(34,197,94,.55);box-shadow:0 8px 30px rgba(0,0,0,.12);transform:scale(.25);transform-origin:bottom right;animation:radialOpen .28s cubic-bezier(.2,.8,.2,1) forwards}
+.radialItem{position:absolute;right:12px;bottom:12px;width:72px;height:72px;border-radius:50%;border:2px solid #22c55e;background:var(--panel);color:var(--ink);box-shadow:0 5px 15px #0002;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:auto;opacity:0;transform:translate(0,0) scale(.5);animation:radialItemIn .28s .04s ease-out forwards}
+.radialItem span{font-size:1.55rem}.radialItem small{font-size:.68rem;font-weight:800}
+#navMore{color:#16864a}#navMore.on{color:#087f3d;background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(34,197,94,.06));box-shadow:inset 0 3px 0 #22c55e}
+@keyframes radialOpen{to{transform:scale(1)}}
+@keyframes radialItemIn{to{opacity:1;transform:translate(-172px,-154px) scale(1)}}
+@media(max-width:420px){.radialMenu{right:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));width:270px;height:270px}.radialMenu::before{width:290px;height:290px}.radialItem{right:8px;bottom:8px}@keyframes radialItemIn{to{opacity:1;transform:translate(-148px,-142px) scale(1)}}}
