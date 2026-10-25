@@ -362,7 +362,13 @@ function page(n){
   try{ if(n=="Rank")openRanking(); else closeRanking(); }catch(e){console.warn(e)}
 }
 $("navAlbum").onclick=()=>page("Album");$("navShop").onclick=()=>page("Shop");$("navTrade").onclick=()=>page("Trade");
-$("navRank").onclick=()=>page("Rank");$("navFriends").onclick=()=>page("Friends");
+$("navRank").onclick=()=>page("Rank");
+const radialTabs=[{id:"Friends",label:"Amigos",icon:"👥"}];
+function toggleRadialMenu(force){const menu=$("radialMenu"),btn=$("navMore");if(!menu||!btn)return;const open=typeof force==="boolean"?force:menu.hidden;menu.hidden=!open;btn.classList.toggle("on",open);btn.setAttribute("aria-expanded",String(open));}
+$("navMore").onclick=()=>toggleRadialMenu();
+$("radialMenu").innerHTML=radialTabs.map(t=>`<button class="radialItem" data-open-page="${t.id}"><span>${t.icon}</span><small>${t.label}</small></button>`).join("");
+$("radialMenu").addEventListener("click",e=>{const b=e.target.closest("[data-open-page]");if(!b)return;toggleRadialMenu(false);page(b.dataset.openPage)});
+document.addEventListener("click",e=>{if(!e.target.closest("#radialMenu")&&!e.target.closest("#navMore"))toggleRadialMenu(false)});
 $("bonus").onclick=()=>claimBonus();
 function ensureOpen(){const b=$("book");if(b.classList.contains("open"))return Promise.resolve();b.classList.add("open");return new Promise(r=>setTimeout(r,1000))}
 async function goToCard(id){
