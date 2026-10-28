@@ -637,3 +637,26 @@ nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34
 .radialItem:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 @media(hover:none){.radialItem:hover:not(.is-touch-active){transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(1)}}
 @media(prefers-reduced-motion:reduce){.radialItem{transition:none}}
+
+
+/* v1.30.23 — menu radial: posicionamento único e seguro para toque */
+.radialMenu{overflow:visible;isolation:isolate}
+.radialMenu:not([hidden]){display:block}
+.radialItem{
+  width:var(--radial-item-size,64px);height:var(--radial-item-size,64px);
+  right:0;bottom:0;box-sizing:border-box;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  touch-action:none;-webkit-tap-highlight-color:transparent;
+  transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(.5);
+  animation:radialItemFade .28s .04s ease-out forwards;
+  will-change:transform,opacity
+}
+@keyframes radialItemFade{from{opacity:0}to{opacity:1}}
+.radialItem:hover,.radialItem:focus-visible,.radialItem.is-touch-active{
+  transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(1.055);
+  box-shadow:0 7px 17px #0003;
+  border-color:color-mix(in srgb,var(--acc) 45%,var(--line));z-index:2
+}
+.radialItem:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media(hover:none){.radialItem:hover:not(.is-touch-active){transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(.5)}}
+@media(prefers-reduced-motion:reduce){.radialItem{animation:none;opacity:1;transition:none}}
