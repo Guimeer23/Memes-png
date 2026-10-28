@@ -1,4 +1,8 @@
 /* Módulo extraído de js/album.js para facilitar manutenção. Ordem definida em js/album.js. */
+
+(function(){
+  const TT={missions:"📋 Missões e bônus diário",settings:"⚙️ Configurações",terms:"📜 Termos de uso",credits:"🏅 Créditos"};
+  const menu=$("menuOv"),sub=$("subOv");
   $("menuBtn").onclick=()=>menu.classList.add("on");
   menu.onclick=e=>{if(e.target===menu)menu.classList.remove("on")};
   function setTheme(t){
