@@ -9,7 +9,17 @@ function openCustomTab(t){const ov=$("customTabOverlay"),frame=$("customTabFrame
 function closeCustomTab(){const ov=$("customTabOverlay");ov.hidden=true;$("customTabFrame").src="about:blank";document.body.style.overflow=""}
 $("navMore").onclick=()=>toggleRadialMenu();
 drawRadialTabs();loadRadialTabs();
-$("radialMenu").addEventListener("click",e=>{const b=e.target.closest("[data-tab-id]");if(!b)return;const t=radialTabs.find(x=>x.id===b.dataset.tabId);toggleRadialMenu(false);if(!t)return;if(t.kind==="page")page(t.id);else openCustomTab(t)});
+function activateRadialTab(b){if(!b)return;const t=radialTabs.find(x=>x.id===b.dataset.tabId);toggleRadialMenu(false);if(!t)return;if(t.kind==="page")page(t.id);else openCustomTab(t)}
+const radialMenuEl=$("radialMenu");
+let radialTouch=null, radialSuppressClickUntil=0;
+function radialButtonAtPoint(x,y){const el=document.elementFromPoint(x,y);return el&&el.closest?el.closest("#radialMenu [data-tab-id]"):null}
+function radialSetTouchTarget(button){if(!radialTouch||!button||button===radialTouch.target)return;radialTouch.target=button;radialMenuEl.querySelectorAll(".radialItem.is-touch-active").forEach(el=>el.classList.remove("is-touch-active"));button.classList.add("is-touch-active");try{if(navigator.vibrate)navigator.vibrate(8)}catch(_){}}
+radialMenuEl.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"||!e.isPrimary)return;const b=e.target.closest("[data-tab-id]");if(!b)return;radialTouch={pointerId:e.pointerId,target:b,moved:false};radialSetTouchTarget(b);radialSuppressClickUntil=Date.now()+1200;try{b.setPointerCapture(e.pointerId)}catch(_){};});
+document.addEventListener("pointermove",e=>{if(!radialTouch||e.pointerId!==radialTouch.pointerId)return;const b=radialButtonAtPoint(e.clientX,e.clientY);if(b){if(b!==radialTouch.target)radialTouch.moved=true;radialSetTouchTarget(b)}});
+function finishRadialTouch(e){if(!radialTouch||e.pointerId!==radialTouch.pointerId)return;const target=radialTouch.target;radialTouch=null;radialMenuEl.querySelectorAll(".radialItem.is-touch-active").forEach(el=>el.classList.remove("is-touch-active"));radialSuppressClickUntil=Date.now()+500;if(target)activateRadialTab(target)}
+document.addEventListener("pointerup",finishRadialTouch);
+document.addEventListener("pointercancel",e=>{if(!radialTouch||e.pointerId!==radialTouch.pointerId)return;radialTouch=null;radialMenuEl.querySelectorAll(".radialItem.is-touch-active").forEach(el=>el.classList.remove("is-touch-active"))});
+radialMenuEl.addEventListener("click",e=>{if(Date.now()<radialSuppressClickUntil){e.preventDefault();e.stopPropagation();return}const b=e.target.closest("[data-tab-id]");if(b)activateRadialTab(b)});
 $("customTabClose").onclick=closeCustomTab;
 $("customTabOverlay").addEventListener("click",e=>{if(e.target===$("customTabOverlay"))closeCustomTab()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){toggleRadialMenu(false);if(!$("customTabOverlay").hidden)closeCustomTab()}});
