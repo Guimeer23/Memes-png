@@ -1,4 +1,19 @@
 /* Módulo extraído de js/album.js para facilitar manutenção. Ordem definida em js/album.js. */
+/* Configuração e estado do Firebase: preservados da versão estável v1.30.15. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBvcN1d7LdddISd1fptsfULLG8lHXDwm1A",
+  authDomain: "meme-colect.firebaseapp.com",
+  projectId: "meme-colect",
+  storageBucket: "meme-colect.firebasestorage.app",
+  messagingSenderId: "608496775691",
+  appId: "1:608496775691:web:509094e78876fd03cf0d0e",
+  measurementId: "G-550B5CQ0XK"
+};
+let fbApp=null,fbAuth=null,fbDb=null,fbUser=null;
+let CD=null,CS="off",cTimer=null,cBusy=false,cDirty=false,applying=false;
+let DB=null,USER=null,ME=null,canW=false,MK=[],tsel=null,tfilter="sell",pend=null;
+const busyC={};
+
 function setCloud(s){CS=s;$("cloud").textContent={off:"☁️",ok:"☁️✓",err:"☁️!",sync:"☁️…"}[s]||"☁️"}
 function initFirebase(){
   try{
