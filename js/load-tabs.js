@@ -10,8 +10,7 @@
       if (!response.ok) throw new Error(path + " — HTTP " + response.status);
       return response.text();
     }));
-    const marker = loading ? loading.outerHTML : "";
-    main.innerHTML = responses.join("\n") + marker;
+    main.innerHTML = responses.join("\n");
     const script = document.createElement("script");
     script.src = "js/album.js";
     script.onerror = () => {
