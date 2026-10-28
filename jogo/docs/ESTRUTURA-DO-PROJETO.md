@@ -7,6 +7,10 @@
 - `js/album.js`: lógica principal do álbum.
 - `memes/`: imagens e GIFs das figurinhas. Manter os nomes e caminhos existentes até atualizar e testar todas as referências.
 
+## Estrutura das abas e módulos
+
+Consulte `ESTRUTURA-v1.30.16.md` para localizar os HTMLs de cada aba e os módulos JavaScript.
+
 ## Pasta `jogo/`
 
 Esta pasta reúne materiais de desenvolvimento e não substitui a entrada do site na raiz.
