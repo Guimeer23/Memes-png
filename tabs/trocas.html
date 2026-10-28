@@ -1,0 +1,17 @@
+<section id="pgTrade" hidden>
+  <div class="box"><h3>Minhas repetidas <small id="nDup"></small></h3><div class="inv" id="invDup"></div>
+   <div id="tForm" hidden><b id="tSel"></b>
+    <div id="tRef"></div>
+    <div class="row"><input id="tPrice" type="number" min="1" inputmode="numeric" placeholder="Preço em 🪙"><button class="main" id="tSell">📢 Anunciar venda</button></div>
+    <div class="mut" id="tPriceNote"></div>
+    <div class="row"><input id="tWant" type="number" min="1" placeholder="Quero o nº (vazio = qualquer)"><button class="main" id="tSwap">🔁 Anunciar troca</button></div>
+    <div class="mut" id="tSwapRef"></div>
+    <div class="autoBox"><small>🏪 <b>Venda automática ao jogo</b> · imediata, sem anúncio e sem outro jogador. Paga 50% do preço calculado.</small>
+    <button class="ghost" id="tStore"></button></div></div></div>
+  <div class="box"><h3>🪑 Mesas de troca</h3><small class="mut">Sentar não inicia a troca: ela só começa quando um segundo jogador senta na mesma mesa.</small><div id="tbList"></div></div>
+  <div class="box"><h3>💬 Negociações de compra</h3><div id="negList"></div></div>
+  <div id="negDlg" hidden style="position:fixed;inset:0;background:#000a;z-index:999;padding:12px;overflow:auto"></div><div id="tbDlg" hidden style="position:fixed;inset:0;background:#000a;z-index:998;padding:12px;overflow:auto"></div>
+  <div class="box"><h3>Mercado dos jogadores</h3>
+   <div class="tf" id="tf"><button class="ghost on" data-f="sell">💰 Vendas</button><button class="ghost" data-f="swap">🔁 Trocas</button><button class="ghost" data-f="mine">📌 Meus</button></div>
+   <div id="tgive"></div><div id="mkList"></div><p class="mut" id="mkMsg"></p></div>
+ </section>

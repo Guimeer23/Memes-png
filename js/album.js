@@ -387,7 +387,7 @@ $("navAlbum").onclick=()=>page("Album");$("navShop").onclick=()=>page("Shop");$(
 $("navRank").onclick=()=>page("Rank");
 const radialTabs=[];
 const ABAS_REPO="Guimeer23/Memes-png";
-const ABAS_REF="refactor/v1.30.15";
+const ABAS_REF="refactor/v1.30.16";
 function labelAba(s){return s.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase())}
 function iconAba(s){const k=s.toLowerCase();if(k.includes("chat")||k.includes("mensag"))return "💬";if(k.includes("notific")||k.includes("aviso"))return "🔔";if(k.includes("conquist"))return "🏆";if(k.includes("perfil"))return "👤";if(k.includes("evento"))return "🎉";return "📂"}
 function toggleRadialMenu(force){const menu=$("radialMenu"),btn=$("navMore");if(!menu||!btn)return;const open=typeof force==="boolean"?force:menu.hidden;menu.hidden=!open;btn.classList.toggle("on",open);btn.setAttribute("aria-expanded",String(open));}
