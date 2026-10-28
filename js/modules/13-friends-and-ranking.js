@@ -350,6 +350,3 @@ render();
 syncMemes().then(()=>{render()});
 initMarket();
 
-(function(){
-  const TT={missions:"📋 Missões e bônus diário",settings:"⚙️ Configurações",terms:"📜 Termos de uso",credits:"🏅 Créditos"};
-  const menu=$("menuOv"),sub=$("subOv");
