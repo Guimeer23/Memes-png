@@ -632,7 +632,7 @@ nav button#navFriends.on{color:#087f3d;background:linear-gradient(180deg,rgba(34
 
 
 /* v1.30.24 — ampliação sutil e seleção por toque no menu radial */
-.radialItem{transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,border-color .16s ease;-webkit-tap-highlight-color:transparent;touch-action:pan-x pan-y}
+.radialItem{transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,border-color .16s ease;-webkit-tap-highlight-color:transparent;touch-action:none}
 .radialItem:hover,.radialItem:focus-visible,.radialItem.is-touch-active{transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(1.055);box-shadow:0 7px 17px #0003;border-color:color-mix(in srgb,var(--acc) 45%,var(--line));z-index:2}
 .radialItem:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 @media(hover:none){.radialItem:hover:not(.is-touch-active){transform:translate(var(--tx,-80px),var(--ty,-80px)) scale(1)}}
